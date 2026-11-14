@@ -3,9 +3,14 @@
 [ext_resource type="Script" uid="uid://uwyk0scwytkl" path="res://bounce_back.gd" id="1_h2yge"]
 [ext_resource type="Texture2D" uid="uid://bmy6y337hqhfg" path="res://assets/icon.svg" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://csk5qvksqyn7c" path="res://assets/Blob-Sheet.png" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://bnqpjoismaglj" path="res://assets/Blobjump-Sheet.png" id="2_lquwl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x2nnc"]
 size = Vector2(13, 13)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_272bh"]
+atlas = ExtResource("2_lquwl")
+region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h2yge"]
 atlas = ExtResource("2_1bvp3")
@@ -23,17 +28,28 @@ region = Rect2(64, 0, 32, 32)
 atlas = ExtResource("2_1bvp3")
 region = Rect2(96, 0, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_5vw27"]
+atlas = ExtResource("2_lquwl")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kek77"]
+atlas = ExtResource("2_lquwl")
+region = Rect2(32, 0, 32, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_cxyn7"]
 animations = [{
 "frames": [],
 "loop": 1,
 "name": &"idle",
-"speed": 5.0
+"speed": 1.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_272bh")
+}],
 "loop": 1,
 "name": &"in_air",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -50,12 +66,18 @@ animations = [{
 }],
 "loop": 1,
 "name": &"laufen",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5vw27")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kek77")
+}],
 "loop": 1,
 "name": &"springen",
-"speed": 5.0
+"speed": 10.0
 }]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0xm2m"]
@@ -203,9 +225,12 @@ position = Vector2(-0.5, -1.5)
 shape = SubResource("RectangleShape2D_x2nnc")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=213156986]
-scale = Vector2(1, 0.952)
+position = Vector2(0, 3.7252903e-09)
+scale = Vector2(1, 1.0031562)
 sprite_frames = SubResource("SpriteFrames_cxyn7")
-animation = &"laufen"
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.76483905
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=859814600]
 
