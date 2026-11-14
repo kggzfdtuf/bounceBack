@@ -1,12 +1,93 @@
 [gd_scene format=4 uid="uid://dmgy4dcgagm2c"]
 
-[ext_resource type="Script" uid="uid://uwyk0scwytkl" path="res://bounce_back.gd" id="1_h2yge"]
 [ext_resource type="Texture2D" uid="uid://bmy6y337hqhfg" path="res://assets/icon.svg" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://csk5qvksqyn7c" path="res://assets/Blob-Sheet.png" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://dlaodm50dl6qj" path="res://assets/Blob1idle-Sheet.png" id="2_7mycd"]
 [ext_resource type="Texture2D" uid="uid://bnqpjoismaglj" path="res://assets/Blobjump-Sheet.png" id="2_lquwl"]
+
+[sub_resource type="GDScript" id="GDScript_w48qg"]
+script/source = "extends CharacterBody2D
+
+var history : Array = []
+
+const COOLDOWN = 1.0
+var cooldown = 0.0
+const SPEED = 90.0
+const MAX_JUMP_TIME = 0.75
+var jump_time = 0.0
+var jumping = false
+var start_jumping = false
+const CAJOTIE_TIME = 0.05
+var cajotie_time = 0.0
+const JUMP_VELOCITY = -400.0
+const MAX_JUMP_VELOCITY = -400
+
+func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed(\"ui_up\") or Input.is_action_just_pressed(\"ui_accept\"):
+		start_jumping = true
+	elif not Input.is_action_pressed(\"ui_up\") and not Input.is_action_pressed(\"ui_accept\"):
+		start_jumping = false
+	if is_on_floor():
+		cajotie_time = CAJOTIE_TIME
+	else:
+		cajotie_time -= delta
+
+	if cajotie_time > 0:
+		jump_time = MAX_JUMP_TIME
+		jumping = false
+		if start_jumping and (Input.is_action_pressed(\"ui_up\") or Input.is_action_pressed(\"ui_accept\")):
+			cajotie_time = 0
+			jumping = true
+			velocity.y = MAX_JUMP_VELOCITY/2
+	else:
+		jump_time -= delta
+		velocity += get_gravity() * delta
+		
+	if (Input.is_action_pressed(\"ui_up\") or Input.is_action_pressed(\"ui_accept\")) and jumping and jump_time > 0:
+		start_jumping = false
+		velocity.y += JUMP_VELOCITY * delta
+		if velocity.y < MAX_JUMP_VELOCITY:
+			velocity.y = MAX_JUMP_VELOCITY
+	else:
+		jumping = false
+
+	var direction := Input.get_axis(\"ui_left\", \"ui_right\")
+	if direction:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+
+
+	var current_time = Time.get_ticks_msec() / 1000
+	history.append({\"time\" : current_time, \"pos\" : global_position})
+	for i in range(len(history)):
+		if i < len(history):
+			if current_time - history[i][\"time\"] > 1.5:
+				history.pop_at(i)
+	if Input.is_action_just_pressed(\"ui_cancel\"):
+		position = history[0][\"pos\"]
+
+	move_and_slide()
+"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x2nnc"]
 size = Vector2(13, 13)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4c57u"]
+atlas = ExtResource("2_7mycd")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_efxa6"]
+atlas = ExtResource("2_7mycd")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dg77c"]
+atlas = ExtResource("2_7mycd")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ycdy4"]
+atlas = ExtResource("2_7mycd")
+region = Rect2(96, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_272bh"]
 atlas = ExtResource("2_lquwl")
@@ -38,10 +119,22 @@ region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_cxyn7"]
 animations = [{
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4c57u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_efxa6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dg77c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ycdy4")
+}],
 "loop": 1,
 "name": &"idle",
-"speed": 1.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -218,10 +311,10 @@ sources/0 = SubResource("TileSetAtlasSource_0xm2m")
 [node name="Node2D" type="Node2D" unique_id=729523872]
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1717729577]
-script = ExtResource("1_h2yge")
+script = SubResource("GDScript_w48qg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=1808072037]
-position = Vector2(-0.5, -1.5)
+position = Vector2(-1.5, -1.5)
 shape = SubResource("RectangleShape2D_x2nnc")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=213156986]
@@ -230,9 +323,10 @@ scale = Vector2(1, 1.0031562)
 sprite_frames = SubResource("SpriteFrames_cxyn7")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.76483905
+frame_progress = 0.17183414
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=859814600]
+zoom = Vector2(3, 3)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=523558179]
 tile_map_data = PackedByteArray("AAD//wEAAAACAAAAAAAAAAEAAAACAAAAAAABAAEAAAACAAAAAAACAAEAAAACAAAAAAADAAEAAAACAAAAAAAEAAEAAAACAAAAAAAFAAEAAAACAAAAAAA=")
