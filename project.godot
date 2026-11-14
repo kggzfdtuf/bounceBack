@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Bounce Back"
-run/main_scene="uid://dmgy4dcgagm2c"
+run/main_scene="uid://dyf3woggu10sm"
 config/features=PackedStringArray("4.7", "Mobile")
 
 [display]
