@@ -13,7 +13,6 @@ config_version=5
 config/name="Bounce Back"
 run/main_scene="uid://dmgy4dcgagm2c"
 config/features=PackedStringArray("4.7", "Mobile")
-config/icon="res://assets/icon.svg"
 
 [display]
 

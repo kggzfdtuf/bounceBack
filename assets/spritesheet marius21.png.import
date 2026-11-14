@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3vyl4lg3vv1e"
-path="res://.godot/imported/Button Cooldown-Sheet.png-f5a6c3f7b3a07c4cb5bca8f8f2f69e8b.ctex"
+uid="uid://cp4v4pm1umbsl"
+path="res://.godot/imported/spritesheet marius21.png-fd02d821c72c5c1d0653bf70842818f1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Button Cooldown-Sheet.png"
-dest_files=["res://.godot/imported/Button Cooldown-Sheet.png-f5a6c3f7b3a07c4cb5bca8f8f2f69e8b.ctex"]
+source_file="res://assets/spritesheet marius21.png"
+dest_files=["res://.godot/imported/spritesheet marius21.png-fd02d821c72c5c1d0653bf70842818f1.ctex"]
 
 [params]
 
