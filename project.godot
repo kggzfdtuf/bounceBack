@@ -28,3 +28,4 @@ window/stretch/aspect="expand"
 textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+environment/defaults/default_clear_color=Color(2.1418184e-06, 0.33264273, 0.44550514, 1)
