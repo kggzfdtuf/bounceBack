@@ -19,14 +19,16 @@ var jumping = false
 var start_jumping = false
 const CAJOTIE_TIME = 0.05
 var cajotie_time = 0.0
-const JUMP_VELOCITY = -400.0
+const JUMP_VELOCITY = -600.0
 const MAX_JUMP_VELOCITY = -400
 
 func _physics_process(delta: float) -> void:
+	cooldown -= delta
 	if Input.is_action_just_pressed(\"ui_up\") or Input.is_action_just_pressed(\"ui_accept\"):
 		start_jumping = true
 	elif not Input.is_action_pressed(\"ui_up\") and not Input.is_action_pressed(\"ui_accept\"):
 		start_jumping = false
+		$AnimatedSprite2D.play(\"springen\")
 	if is_on_floor():
 		cajotie_time = CAJOTIE_TIME
 	else:
@@ -54,8 +56,18 @@ func _physics_process(delta: float) -> void:
 	var direction := Input.get_axis(\"ui_left\", \"ui_right\")
 	if direction:
 		velocity.x = direction * SPEED
+		if direction < 0:
+			if is_on_floor():
+				$AnimatedSprite2D.play(\"laufen\")
+			$AnimatedSprite2D.scale.x = -1
+		elif direction > 0:
+			if is_on_floor():
+				$AnimatedSprite2D.play(\"laufen\")
+			$AnimatedSprite2D.scale.x = 1
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+		if is_on_floor():
+			$AnimatedSprite2D.play(\"idle\")
 
 
 	var current_time = Time.get_ticks_msec() / 1000
@@ -64,8 +76,9 @@ func _physics_process(delta: float) -> void:
 		if i < len(history):
 			if current_time - history[i][\"time\"] > 1.5:
 				history.pop_at(i)
-	if Input.is_action_just_pressed(\"ui_cancel\"):
+	if Input.is_action_just_pressed(\"ui_cancel\") and cooldown <= 0:
 		position = history[0][\"pos\"]
+		cooldown = COOLDOWN
 
 	move_and_slide()
 "
@@ -215,11 +228,10 @@ position = Vector2(-1.5, -2)
 shape = SubResource("CircleShape2D_1bvp3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=213156986]
-scale = Vector2(1, 1.0031562)
+scale = Vector2(0.997, 1)
 sprite_frames = SubResource("SpriteFrames_cxyn7")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.17183414
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=859814600]
 zoom = Vector2(3, 3)
